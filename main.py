@@ -1,6 +1,7 @@
 from datetime import time
 
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.openapi.models import Response
 from sqlalchemy.dialects.postgresql import psycopg2
 from sqlalchemy.orm import Session
 from starlette import status
@@ -55,3 +56,14 @@ def update(id: int, product: Products, db: Session = Depends(get_db)):
         updated_post.update(product.dict(), synchronize_session=False)
         db.commit()
     return updated_post.first()
+
+
+@app.delete("/delete/{id}")
+def delete(id: int, db: Session = Depends(get_db), status_code=status.HTTP_204_NO_CONTENT):
+    delete_post = db.query(models.Product).filter(models.Product.id == id)
+    if delete_post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with such id does not exist")
+    else:
+        delete_post.delete(synchronize_session=False)
+        db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
