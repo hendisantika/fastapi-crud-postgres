@@ -1,8 +1,9 @@
 from datetime import time
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.dialects.postgresql import psycopg2
 from sqlalchemy.orm import Session
+from starlette import status
 
 import models
 from database import engine, get_db
@@ -42,3 +43,15 @@ def create(product: Products, db: Session = Depends(get_db)):
 def get(db: Session = Depends(get_db)):
     all_products = db.query(models.Product).all()
     return all_products
+
+
+@app.put("/update/{id}")
+def update(id: int, product: Products, db: Session = Depends(get_db)):
+    updated_post = db.query(models.Product).filter(models.Product.id == id)
+    updated_post.first()
+    if updated_post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'post with such id: {id} does not exist')
+    else:
+        updated_post.update(product.dict(), synchronize_session=False)
+        db.commit()
+    return updated_post.first()
