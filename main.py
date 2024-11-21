@@ -36,3 +36,9 @@ def create(product: Products, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_product)
     return new_product
+
+
+@app.get("/product")
+def get(db: Session = Depends(get_db)):
+    all_products = db.query(models.Product).all()
+    return all_products
