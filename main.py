@@ -12,8 +12,8 @@ from schemas import Products
 
 while True:
     try:
-        conn = psycopg2.connect(host='localhost', database='ecommerce', user='postgres',
-                                password='admin', cursor_factory=RealDictCursor)
+        conn = psycopg2.connect(host='localhost', database='ecommerce', user='hendisantika',
+                                password='53cret', cursor_factory=RealDictCursor)
         cursor = conn.cursor()
         print('Database succesfully connected')
         break
