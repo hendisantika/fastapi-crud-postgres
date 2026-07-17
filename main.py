@@ -46,7 +46,7 @@ def posts():
 
 @app.post("/product")
 def create(product: Products, db: Session = Depends(get_db)):
-    new_product = models.Product(**product.dict())
+    new_product = models.Product(**product.model_dump())
     db.add(new_product)
     db.commit()
     db.refresh(new_product)
@@ -64,7 +64,7 @@ def update(id: int, product: Products, db: Session = Depends(get_db)):
     updated_post = db.query(models.Product).filter(models.Product.id == id)
     if updated_post.first() is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'product with such id: {id} does not exist')
-    updated_post.update(product.dict(), synchronize_session=False)
+    updated_post.update(product.model_dump(), synchronize_session=False)
     db.commit()
     return updated_post.first()
 
