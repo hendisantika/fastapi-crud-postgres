@@ -5,7 +5,6 @@
       "Group": "Servers",
       "Port": 5432,
       "Username": "hendisantika",
-      "Password": "53cret",
       "Host": "postgres",
       "SSLMode": "prefer",
       "MaintenanceDB": "ecommerce",

@@ -7,21 +7,21 @@ services:
     container_name: postgres17-fastAPI
     image: 'postgres:17-alpine3.20'
     environment:
-      POSTGRES_DB: ecommerce
-      POSTGRES_USER: hendisantika
-      POSTGRES_PASSWORD: 53cret
+      POSTGRES_DB: ${DB_NAME:-ecommerce}
+      POSTGRES_USER: ${DB_USER:-hendisantika}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set — copy .env.example to .env}
     volumes:
       - ./postgres17:/data/postgres
     ports:
-      - '5432:5432'
+      - '${DB_PORT:-5432}:5432'
     restart: unless-stopped
 
   pgadmin:
     container_name: pgadmin4
     image: 'dpage/pgadmin4:8.12.0'
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@localhost.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-admin@localhost.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-admin}
       PGADMIN_LISTEN_PORT: 5050
       PGADMIN_CONFIG_SERVER_MODE: "False"
       PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
@@ -33,4 +33,4 @@ services:
     entrypoint:
       - "/bin/sh"
       - "-c"
-      - "/bin/echo 'postgres:5432:*:hendisantika:53cret' > /tmp/pgpassfile && chmod 600 /tmp/pgpassfile && /entrypoint.sh"
+      - "/bin/echo 'postgres:5432:*:${DB_USER:-hendisantika}:${DB_PASSWORD:?DB_PASSWORD must be set}' > /tmp/pgpassfile && chmod 600 /tmp/pgpassfile && /entrypoint.sh"
