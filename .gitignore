@@ -5,3 +5,8 @@
 
 # local environment variables (contains secrets)
 .env
+
+# python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
