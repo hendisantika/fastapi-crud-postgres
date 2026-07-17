@@ -1,4 +1,5 @@
 import time
+from typing import Annotated
 
 import psycopg2
 from fastapi import FastAPI, Depends, HTTPException, Response
@@ -9,6 +10,8 @@ from starlette import status
 import models
 from database import engine, get_db
 from schemas import Products
+
+DbSession = Annotated[Session, Depends(get_db)]
 
 while True:
     try:
@@ -45,7 +48,7 @@ def posts():
 
 
 @app.post("/product")
-def create(product: Products, db: Session = Depends(get_db)):
+def create(product: Products, db: DbSession):
     new_product = models.Product(**product.model_dump())
     db.add(new_product)
     db.commit()
@@ -54,13 +57,13 @@ def create(product: Products, db: Session = Depends(get_db)):
 
 
 @app.get("/product")
-def get(db: Session = Depends(get_db)):
+def get(db: DbSession):
     all_products = db.query(models.Product).all()
     return all_products
 
 
 @app.put("/update/{id}")
-def update(id: int, product: Products, db: Session = Depends(get_db)):
+def update(id: int, product: Products, db: DbSession):
     updated_post = db.query(models.Product).filter(models.Product.id == id)
     if updated_post.first() is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'product with such id: {id} does not exist')
@@ -70,7 +73,7 @@ def update(id: int, product: Products, db: Session = Depends(get_db)):
 
 
 @app.delete("/delete/{id}")
-def delete(id: int, db: Session = Depends(get_db), status_code=status.HTTP_204_NO_CONTENT):
+def delete(id: int, db: DbSession):
     delete_post = db.query(models.Product).filter(models.Product.id == id)
     if delete_post.first() is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"product with such id: {id} does not exist")
