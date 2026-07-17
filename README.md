@@ -13,15 +13,18 @@ A small CRUD REST API for managing products, built with **FastAPI**, **SQLAlchem
 
 ## Project Structure
 
-| File             | Purpose                                              |
-| ---------------- | ---------------------------------------------------- |
-| `main.py`        | FastAPI app and route handlers                       |
-| `database.py`    | SQLAlchemy engine, session, and `get_db` dependency  |
-| `models.py`      | `Product` ORM model (table `products`)               |
-| `schemas.py`     | `Products` Pydantic request schema                   |
-| `compose.yml`    | Docker Compose for PostgreSQL + pgAdmin              |
-| `requirements.txt` | Python dependencies                                |
-| `test_main.http` | Sample HTTP requests                                 |
+| File                 | Purpose                                              |
+| -------------------- | ---------------------------------------------------- |
+| `main.py`            | FastAPI app and route handlers                       |
+| `config.py`          | Loads settings from the environment (`.env`)         |
+| `database.py`        | SQLAlchemy engine, session, and `get_db` dependency  |
+| `models.py`          | `Product` ORM model (table `products`)               |
+| `schemas.py`         | `Products` Pydantic request schema                   |
+| `compose.yml`        | Docker Compose for PostgreSQL + pgAdmin              |
+| `requirements.txt`   | Python dependencies                                  |
+| `.env.example`       | Template for the environment variables               |
+| `tests/`             | pytest test suite                                    |
+| `test_main.http`     | Sample HTTP requests                                 |
 
 ## Data Model
 
@@ -38,24 +41,42 @@ The `products` table:
 
 ## Getting Started
 
-### 1. Provide a PostgreSQL database
+### 1. Configure environment variables
 
-The app connects to database `ecommerce` on `localhost:5432` as user `hendisantika`
-(see `database.py`). You can either use an existing local PostgreSQL instance or
-spin one up with Docker Compose:
+All database and pgAdmin credentials are read from the environment. Copy the
+template and adjust the values for your setup:
+
+```bash
+cp .env.example .env
+```
+
+The `.env` file is gitignored, so your secrets stay out of version control.
+Available variables:
+
+| Variable          | Default              | Description                          |
+| ----------------- | -------------------- | ------------------------------------ |
+| `DB_HOST`         | `localhost`          | PostgreSQL host                      |
+| `DB_PORT`         | `5432`               | PostgreSQL port                      |
+| `DB_NAME`         | `ecommerce`          | Database name                        |
+| `DB_USER`         | `hendisantika`       | Database user                        |
+| `DB_PASSWORD`     | —                    | Database password (**required**)     |
+| `PGADMIN_EMAIL`   | `admin@localhost.com`| pgAdmin login email (Docker only)    |
+| `PGADMIN_PASSWORD`| `admin`              | pgAdmin login password (Docker only) |
+
+### 2. Provide a PostgreSQL database
+
+You can either use an existing local PostgreSQL instance (make sure the database
+named in `DB_NAME` exists) or spin one up with Docker Compose, which reads the
+same `.env`:
 
 ```bash
 docker compose up -d        # starts PostgreSQL (5432) and pgAdmin (5050)
 ```
 
 pgAdmin will be available at http://localhost:5050 with the server pre-configured
-via `pgadmin.json`.
+via `pgadmin.json` (it authenticates using the credentials from `.env`).
 
-> If you use your own PostgreSQL, update the credentials in `database.py`
-> (`SQLALCHEMY_DATABASE_URL`) and the connection block in `main.py` accordingly,
-> and make sure the `ecommerce` database exists.
-
-### 2. Install dependencies
+### 3. Install dependencies
 
 ```bash
 python -m venv .venv
@@ -63,7 +84,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 3. Run the app
+### 4. Run the app
 
 ```bash
 uvicorn main:app --reload
@@ -71,6 +92,15 @@ uvicorn main:app --reload
 
 The API starts on http://127.0.0.1:8000. Tables are created automatically on
 startup. Interactive docs are available at http://127.0.0.1:8000/docs.
+
+### 5. Run the tests
+
+```bash
+pytest
+```
+
+The tests use FastAPI's `TestClient` and require a reachable database configured
+via `.env`.
 
 ## API Endpoints
 
