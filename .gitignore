@@ -2,3 +2,6 @@
 .venv
 /pgadmin/
 /postgres17/
+
+# local environment variables (contains secrets)
+.env

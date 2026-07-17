@@ -7,6 +7,7 @@ from psycopg2.extras import RealDictCursor
 from sqlalchemy.orm import Session
 from starlette import status
 
+import config
 import models
 from database import engine, get_db
 from schemas import Products
@@ -15,8 +16,9 @@ DbSession = Annotated[Session, Depends(get_db)]
 
 while True:
     try:
-        conn = psycopg2.connect(host='localhost', database='ecommerce', user='hendisantika',
-                                password='53cret', cursor_factory=RealDictCursor)
+        conn = psycopg2.connect(host=config.DB_HOST, port=config.DB_PORT, database=config.DB_NAME,
+                                user=config.DB_USER, password=config.DB_PASSWORD,
+                                cursor_factory=RealDictCursor)
         cursor = conn.cursor()
         print('Database succesfully connected')
         break
