@@ -22,7 +22,20 @@ while True:
         print('error:', error)
         time.sleep(3)
 
-app = FastAPI()
+app = FastAPI(
+    title="FastAPI CRUD Postgres",
+    description="A simple CRUD REST API for managing products, "
+                "built with FastAPI, SQLAlchemy, and PostgreSQL.",
+    version="1.0.0",
+    contact={
+        "name": "Hendi Santika",
+        "email": "hendisantika@yahoo.co.id",
+        "url": "https://github.com/hendisantika/fastapi-crud-postgres",
+    },
+    license_info={
+        "name": "MIT License",
+    },
+)
 
 models.Base.metadata.create_all(bind=engine)
 
