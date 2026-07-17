@@ -9,7 +9,7 @@ A small CRUD REST API for managing products, built with **FastAPI**, **SQLAlchem
 - [PostgreSQL](https://www.postgresql.org/) 17 — database
 - [Uvicorn](https://www.uvicorn.org/) — ASGI server
 - [psycopg2](https://www.psycopg.org/) — PostgreSQL driver
-- Python 3.9+
+- Python 3.10+
 
 ## Project Structure
 
