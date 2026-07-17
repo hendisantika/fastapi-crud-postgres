@@ -1,8 +1,7 @@
-from datetime import time
+import time
 
 import psycopg2
-from fastapi import FastAPI, Depends, HTTPException
-from fastapi.openapi.models import Response
+from fastapi import FastAPI, Depends, HTTPException, Response
 from psycopg2.extras import RealDictCursor
 from sqlalchemy.orm import Session
 from starlette import status
