@@ -18,7 +18,7 @@ MarkupSafe==3.0.4
 mdurl==0.1.2
 psycopg2-binary==2.9.13
 pytest==9.1.1
-pydantic==2.14.0
+pydantic==2.14.1
 pydantic_core==2.50.0
 Pygments==2.21.0
 python-dotenv==1.2.4
